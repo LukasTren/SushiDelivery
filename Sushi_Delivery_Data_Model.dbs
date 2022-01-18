@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="Sushi_Delivery_Schema" id="Project-1ee9" database="MariaDb" >
-	<comment><![CDATA[Logical Database Schema for Sushi Delivery platform.]]></comment>
-	<schema name="sushi_delivery_schema" >
-		<table name="address" prior="adr_id" >
+<project name="Online_Sushi_Delivery" id="Project-1ee9" database="MariaDb" >
+	<comment><![CDATA[Logical Database Model for Sushi Delivery platform.]]></comment>
+	<schema name="sushi_delivery" options="" >
+		<comment><![CDATA[Schema of online sushi delivery services.]]></comment>
+		<table name="address" prior="adr_id" generator_rows="150" >
 			<comment><![CDATA[Address table for collecting and saving default user addresses]]></comment>
 			<column name="adr_id" type="int" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
@@ -20,12 +21,12 @@
 			<index name="pk_address_adr_id" unique="PRIMARY_KEY" >
 				<column name="adr_id" />
 			</index>
-			<fk name="fk_address_user" to_schema="sushi_delivery_schema" to_table="user" >
+			<fk name="fk_address_user" to_schema="sushi_delivery" to_table="user" >
 				<fk_column name="u_id" pk="u_id" />
 			</fk>
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
-		<table name="extras" prior="tbl" >
+		<table name="extras" prior="tbl" generator_rows="100" >
 			<comment><![CDATA[Table for extras which can be appended to each order.]]></comment>
 			<column name="e_id" type="int" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
@@ -42,7 +43,7 @@
 			</index>
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
-		<table name="menu_items" prior="menu" >
+		<table name="menu_items" prior="menu" generator_rows="150" >
 			<comment><![CDATA[All menu items which can be ordered.]]></comment>
 			<column name="mi_id" type="int" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
@@ -68,12 +69,12 @@
 			<index name="unq_menu_items_mt_id" unique="UNIQUE_KEY" >
 				<column name="mt_id" />
 			</index>
-			<fk name="fk_menu_items_menu_type" to_schema="sushi_delivery_schema" to_table="menu_type" >
+			<fk name="fk_menu_items_menu_type" to_schema="sushi_delivery" to_table="menu_type" >
 				<fk_column name="mt_id" pk="mt_id" />
 			</fk>
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
-		<table name="menu_type" prior="tbl" >
+		<table name="menu_type" prior="tbl" generator_rows="100" >
 			<comment><![CDATA[Table for different types of menu items.]]></comment>
 			<column name="mt_id" type="int" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
@@ -87,7 +88,7 @@
 			</index>
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
-		<table name="order" prior="tbl" >
+		<table name="order" prior="tbl" generator_rows="150" >
 			<comment><![CDATA[Order table for logging each order]]></comment>
 			<column name="o_id" type="int" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
@@ -126,15 +127,15 @@
 			<index name="pk_tbl_o_id" unique="PRIMARY_KEY" >
 				<column name="o_id" />
 			</index>
-			<fk name="fk_order_restaurant" to_schema="sushi_delivery_schema" to_table="restaurant" >
+			<fk name="fk_order_restaurant" to_schema="sushi_delivery" to_table="restaurant" >
 				<fk_column name="r_id" pk="r_id" />
 			</fk>
-			<fk name="fk_order_user" to_schema="sushi_delivery_schema" to_table="user" >
+			<fk name="fk_order_user" to_schema="sushi_delivery" to_table="user" >
 				<fk_column name="u_id" pk="u_id" />
 			</fk>
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
-		<table name="order_details" prior="tbl" >
+		<table name="order_details" prior="tbl" generator_rows="225" >
 			<comment><![CDATA[Details of each order]]></comment>
 			<column name="od_id" type="int" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
@@ -162,18 +163,18 @@
 			<index name="unq_order_details_o_id" unique="UNIQUE_KEY" >
 				<column name="o_id" />
 			</index>
-			<fk name="fk_order_details_menu_items" to_schema="sushi_delivery_schema" to_table="menu_items" >
+			<fk name="fk_order_details_menu_items" to_schema="sushi_delivery" to_table="menu_items" >
 				<fk_column name="mi_id" pk="mi_id" />
 			</fk>
-			<fk name="fk_order_details_order" to_schema="sushi_delivery_schema" to_table="order" >
+			<fk name="fk_order_details_order" to_schema="sushi_delivery" to_table="order" >
 				<fk_column name="o_id" pk="o_id" />
 			</fk>
-			<fk name="fk_order_details_extras" to_schema="sushi_delivery_schema" to_table="extras" >
+			<fk name="fk_order_details_extras" to_schema="sushi_delivery" to_table="extras" >
 				<fk_column name="e_id" pk="e_id" />
 			</fk>
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
-		<table name="order_status" prior="tbl" >
+		<table name="order_status" prior="tbl" generator_rows="225" >
 			<comment><![CDATA[Statuses for each Orders]]></comment>
 			<column name="os_id" type="int" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
@@ -191,15 +192,15 @@
 			<index name="pk_order_status_os_id_0" unique="PRIMARY_KEY" >
 				<column name="os_id" />
 			</index>
-			<fk name="fk_order_status_order_types" to_schema="sushi_delivery_schema" to_table="order_status_type" >
+			<fk name="fk_order_status_order_types" to_schema="sushi_delivery" to_table="order_status_type" >
 				<fk_column name="ost_id" pk="ost_id" />
 			</fk>
-			<fk name="fk_order_status_order" to_schema="sushi_delivery_schema" to_table="order" >
+			<fk name="fk_order_status_order" to_schema="sushi_delivery" to_table="order" >
 				<fk_column name="o_id" pk="o_id" />
 			</fk>
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
-		<table name="order_status_type" prior="order_types" >
+		<table name="order_status_type" prior="order_types" generator_rows="100" >
 			<comment><![CDATA[Types of Order Status]]></comment>
 			<column name="ost_id" prior="ot_id" type="int" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
@@ -224,7 +225,7 @@
 				<column name="pd_id" />
 			</index>
 		</table>
-		<table name="rating" prior="tbl" >
+		<table name="rating" prior="tbl" generator_rows="225" >
 			<comment><![CDATA[Table for order ratings]]></comment>
 			<column name="rt_id" type="int" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
@@ -243,12 +244,12 @@
 			<index name="unq_rating_o_id" unique="UNIQUE_KEY" >
 				<column name="o_id" />
 			</index>
-			<fk name="fk_rating_order" to_schema="sushi_delivery_schema" to_table="order" >
+			<fk name="fk_rating_order" to_schema="sushi_delivery" to_table="order" >
 				<fk_column name="o_id" pk="o_id" />
 			</fk>
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
-		<table name="restaurant" prior="tbl" >
+		<table name="restaurant" prior="tbl" generator_rows="100" >
 			<comment><![CDATA[Restaurants table]]></comment>
 			<column name="r_id" type="int" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
@@ -271,7 +272,7 @@
 			</index>
 			<options><![CDATA[engine=InnoDB]]></options>
 		</table>
-		<table name="user" prior="tbl" >
+		<table name="user" prior="tbl" generator_rows="100" >
 			<comment><![CDATA[Tables for user info]]></comment>
 			<column name="u_id" type="int" jt="4" mandatory="y" unsigned="y" >
 				<identity><![CDATA[AUTO_INCREMENT]]></identity>
@@ -302,35 +303,36 @@
 		</table>
 	</schema>
 	<connector name="MariaDb" database="MariaDb" host="localhost" port="3306" user="root" />
-	<layout name="Default Layout" id="Layout-1582" joined_routing="y" show_relation="columns" >
-		<entity schema="sushi_delivery_schema" name="address" color="B399FF" x="1184" y="80" />
-		<entity schema="sushi_delivery_schema" name="extras" color="E6E6B3" x="176" y="688" />
-		<entity schema="sushi_delivery_schema" name="menu_items" color="E6E6B3" x="208" y="272" />
-		<entity schema="sushi_delivery_schema" name="menu_type" color="E6E6B3" x="48" y="320" />
-		<entity schema="sushi_delivery_schema" name="order" color="E6804D" x="688" y="416" />
-		<entity schema="sushi_delivery_schema" name="order_details" color="E6804D" x="416" y="448" />
-		<entity schema="sushi_delivery_schema" name="order_status" color="E6804D" x="992" y="640" />
-		<entity schema="sushi_delivery_schema" name="order_status_type" color="E6804D" x="1248" y="672" />
-		<entity schema="sushi_delivery_schema" name="rating" color="E6804D" x="592" y="688" />
-		<entity schema="sushi_delivery_schema" name="restaurant" color="B399FF" x="608" y="80" />
-		<entity schema="sushi_delivery_schema" name="user" color="B399FF" x="960" y="160" />
+	<layout name="Online Sushi Delivery Model" id="Layout-1582" joined_routing="y" show_column_type="y" show_relation="columns" >
+		<comment><![CDATA[Online_Sushi_Delivery]]></comment>
+		<entity schema="sushi_delivery" name="address" color="B399FF" x="1248" y="80" />
+		<entity schema="sushi_delivery" name="extras" color="E6E6B3" x="272" y="704" />
+		<entity schema="sushi_delivery" name="menu_items" color="E6E6B3" x="288" y="288" />
+		<entity schema="sushi_delivery" name="menu_type" color="E6E6B3" x="48" y="352" />
+		<entity schema="sushi_delivery" name="order" color="E6804D" x="832" y="448" />
+		<entity schema="sushi_delivery" name="order_details" color="E6804D" x="560" y="480" />
+		<entity schema="sushi_delivery" name="order_status" color="E6804D" x="1136" y="672" />
+		<entity schema="sushi_delivery" name="order_status_type" color="E6804D" x="1392" y="704" />
+		<entity schema="sushi_delivery" name="rating" color="E6804D" x="736" y="720" />
+		<entity schema="sushi_delivery" name="restaurant" color="B399FF" x="608" y="96" />
+		<entity schema="sushi_delivery" name="user" color="B399FF" x="944" y="208" />
 		<group name="Menu" color="E6E6B3" >
 			<comment><![CDATA[Group of tables related to menu]]></comment>
-			<entity schema="sushi_delivery_schema" name="extras" />
-			<entity schema="sushi_delivery_schema" name="menu_type" />
-			<entity schema="sushi_delivery_schema" name="menu_items" />
+			<entity schema="sushi_delivery" name="extras" />
+			<entity schema="sushi_delivery" name="menu_type" />
+			<entity schema="sushi_delivery" name="menu_items" />
 		</group>
 		<group name=" Orders" color="E6804D" >
-			<entity schema="sushi_delivery_schema" name="order" />
-			<entity schema="sushi_delivery_schema" name="order_status" />
-			<entity schema="sushi_delivery_schema" name="order_status_type" />
-			<entity schema="sushi_delivery_schema" name="rating" />
-			<entity schema="sushi_delivery_schema" name="order_details" />
+			<entity schema="sushi_delivery" name="order" />
+			<entity schema="sushi_delivery" name="order_status" />
+			<entity schema="sushi_delivery" name="order_status_type" />
+			<entity schema="sushi_delivery" name="rating" />
+			<entity schema="sushi_delivery" name="order_details" />
 		</group>
 		<group name="Customer &amp; Restaurant" color="B399FF" >
-			<entity schema="sushi_delivery_schema" name="restaurant" />
-			<entity schema="sushi_delivery_schema" name="user" />
-			<entity schema="sushi_delivery_schema" name="address" />
+			<entity schema="sushi_delivery" name="restaurant" />
+			<entity schema="sushi_delivery" name="user" />
+			<entity schema="sushi_delivery" name="address" />
 		</group>
 	</layout>
 </project>
