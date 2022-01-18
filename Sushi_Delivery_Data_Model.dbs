@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="Sushi_Delivery_Schema" id="Project-1ee9" database="MariaDb" >
+	<comment><![CDATA[Logical Database Schema for Sushi Delivery platform.]]></comment>
+	<schema name="sushi_delivery_schema" >
+		<table name="address" prior="adr_id" >
+			<comment><![CDATA[Address table for collecting and saving default user addresses]]></comment>
+			<column name="adr_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="u_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<comment><![CDATA[FK for Users table]]></comment>
+			</column>
+			<column name="adr_line_1" type="varchar" length="255" jt="12" mandatory="y" >
+				<comment><![CDATA[First Address line]]></comment>
+			</column>
+			<column name="adr_line_2" type="varchar" length="150" jt="12" />
+			<column name="adr_province" type="varchar" length="100" jt="12" />
+			<column name="adr_city" prior="city_id" type="varchar" length="50" jt="12" mandatory="y" />
+			<column name="adr_postcode" type="varchar" length="32" jt="12" mandatory="y" />
+			<index name="pk_address_adr_id" unique="PRIMARY_KEY" >
+				<column name="adr_id" />
+			</index>
+			<fk name="fk_address_user" to_schema="sushi_delivery_schema" to_table="user" >
+				<fk_column name="u_id" pk="u_id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="extras" prior="tbl" >
+			<comment><![CDATA[Table for extras which can be appended to each order.]]></comment>
+			<column name="e_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+				<comment><![CDATA[Extras table Primary Key]]></comment>
+			</column>
+			<column name="e_name" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[Name of the extra]]></comment>
+			</column>
+			<column name="e_price" type="decimal" jt="3" mandatory="y" unsigned="y" >
+				<comment><![CDATA[Price of the extra]]></comment>
+			</column>
+			<index name="pk_extras_e_id" unique="PRIMARY_KEY" >
+				<column name="e_id" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="menu_items" prior="menu" >
+			<comment><![CDATA[All menu items which can be ordered.]]></comment>
+			<column name="mi_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="mt_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<comment><![CDATA[Foreign key for Menu Type table, describes the type of each menu item.]]></comment>
+			</column>
+			<column name="mi_name" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[Name of the menu item]]></comment>
+			</column>
+			<column name="mi_ingedients" prior="mi_ingediants" type="varchar" length="150" jt="12" mandatory="y" >
+				<comment><![CDATA[List of ingrediants used in the menu item]]></comment>
+			</column>
+			<column name="mi_price" type="decimal" jt="3" mandatory="y" unsigned="y" >
+				<comment><![CDATA[Price of the item]]></comment>
+			</column>
+			<column name="mi_image" type="blob" jt="2004" >
+				<comment><![CDATA[Image of the menu item]]></comment>
+			</column>
+			<index name="pk_menu_items_mi_id" unique="PRIMARY_KEY" >
+				<column name="mi_id" />
+			</index>
+			<index name="unq_menu_items_mt_id" unique="UNIQUE_KEY" >
+				<column name="mt_id" />
+			</index>
+			<fk name="fk_menu_items_menu_type" to_schema="sushi_delivery_schema" to_table="menu_type" >
+				<fk_column name="mt_id" pk="mt_id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="menu_type" prior="tbl" >
+			<comment><![CDATA[Table for different types of menu items.]]></comment>
+			<column name="mt_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+				<comment><![CDATA[Menu type primary key]]></comment>
+			</column>
+			<column name="mt_name" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[Name of the menu type]]></comment>
+			</column>
+			<index name="pk_menu_type_mt_id" unique="PRIMARY_KEY" >
+				<column name="mt_id" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="order" prior="tbl" >
+			<comment><![CDATA[Order table for logging each order]]></comment>
+			<column name="o_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+				<comment><![CDATA[Order table Primary Key]]></comment>
+			</column>
+			<column name="u_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<comment><![CDATA[Foreign Key for User table.]]></comment>
+			</column>
+			<column name="r_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<comment><![CDATA[Foreign Key for Restaurant ID]]></comment>
+			</column>
+			<column name="o_delivery_address" prior="o_address" type="varchar" length="255" jt="12" mandatory="y" >
+				<comment><![CDATA[Address of deliver]]></comment>
+			</column>
+			<column name="o_price" type="decimal" jt="3" unsigned="y" >
+				<comment><![CDATA[Price of the order]]></comment>
+			</column>
+			<column name="o_discount" type="int" jt="4" unsigned="y" >
+				<comment><![CDATA[Discount on the order]]></comment>
+			</column>
+			<column name="o_total_price" type="decimal" jt="3" mandatory="y" unsigned="y" >
+				<comment><![CDATA[Total price of the order]]></comment>
+			</column>
+			<column name="o_order_placed" type="timestamp" jt="93" mandatory="y" >
+				<comment><![CDATA[When the order was placed]]></comment>
+			</column>
+			<column name="o_estimated_delivery" type="timestamp" jt="93" mandatory="y" >
+				<comment><![CDATA[Estimated Delivery Time]]></comment>
+			</column>
+			<column name="o_prepared" type="timestamp" jt="93" >
+				<comment><![CDATA[When the food is prepared]]></comment>
+			</column>
+			<column name="o_delivered" prior="o_delivery_time" type="timestamp" jt="93" >
+				<comment><![CDATA[When the foods was delivered]]></comment>
+			</column>
+			<index name="pk_tbl_o_id" unique="PRIMARY_KEY" >
+				<column name="o_id" />
+			</index>
+			<fk name="fk_order_restaurant" to_schema="sushi_delivery_schema" to_table="restaurant" >
+				<fk_column name="r_id" pk="r_id" />
+			</fk>
+			<fk name="fk_order_user" to_schema="sushi_delivery_schema" to_table="user" >
+				<fk_column name="u_id" pk="u_id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="order_details" prior="tbl" >
+			<comment><![CDATA[Details of each order]]></comment>
+			<column name="od_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+				<comment><![CDATA[Primary Key of Order Details table]]></comment>
+			</column>
+			<column name="o_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<comment><![CDATA[FK for Order table ID]]></comment>
+			</column>
+			<column name="mi_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<comment><![CDATA[FK for menu items ID]]></comment>
+			</column>
+			<column name="od_quantity" type="int" jt="4" mandatory="y" unsigned="y" >
+				<comment><![CDATA[Quantity of items]]></comment>
+			</column>
+			<column name="e_id" type="int" jt="4" unsigned="y" >
+				<comment><![CDATA[FK for Extras table]]></comment>
+			</column>
+			<column name="od_price" type="decimal" jt="3" mandatory="y" unsigned="y" />
+			<column name="od_comments" type="varchar" length="150" jt="12" >
+				<comment><![CDATA[Comments for each item]]></comment>
+			</column>
+			<index name="pk_order_details_od_id" unique="PRIMARY_KEY" >
+				<column name="od_id" />
+			</index>
+			<index name="unq_order_details_o_id" unique="UNIQUE_KEY" >
+				<column name="o_id" />
+			</index>
+			<fk name="fk_order_details_menu_items" to_schema="sushi_delivery_schema" to_table="menu_items" >
+				<fk_column name="mi_id" pk="mi_id" />
+			</fk>
+			<fk name="fk_order_details_order" to_schema="sushi_delivery_schema" to_table="order" >
+				<fk_column name="o_id" pk="o_id" />
+			</fk>
+			<fk name="fk_order_details_extras" to_schema="sushi_delivery_schema" to_table="extras" >
+				<fk_column name="e_id" pk="e_id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="order_status" prior="tbl" >
+			<comment><![CDATA[Statuses for each Orders]]></comment>
+			<column name="os_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+				<comment><![CDATA[PK for Order Status]]></comment>
+			</column>
+			<column name="o_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<comment><![CDATA[FK for Order ID]]></comment>
+			</column>
+			<column name="ost_id" prior="ot_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<comment><![CDATA[FK for Order Type ID]]></comment>
+			</column>
+			<column name="os_timestamp" type="timestamp" length="12" jt="93" >
+				<defo><![CDATA[CURRENT_TIMESTAMP]]></defo>
+			</column>
+			<index name="pk_order_status_os_id_0" unique="PRIMARY_KEY" >
+				<column name="os_id" />
+			</index>
+			<fk name="fk_order_status_order_types" to_schema="sushi_delivery_schema" to_table="order_status_type" >
+				<fk_column name="ost_id" pk="ost_id" />
+			</fk>
+			<fk name="fk_order_status_order" to_schema="sushi_delivery_schema" to_table="order" >
+				<fk_column name="o_id" pk="o_id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="order_status_type" prior="order_types" >
+			<comment><![CDATA[Types of Order Status]]></comment>
+			<column name="ost_id" prior="ot_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+				<comment><![CDATA[PK for Order Status]]></comment>
+			</column>
+			<column name="ost_status_name" prior="os_status_name" type="varchar" length="50" jt="12" mandatory="y" >
+				<comment><![CDATA[Order Status Name]]></comment>
+			</column>
+			<index name="pk_order_status_os_id" unique="PRIMARY_KEY" >
+				<column name="ost_id" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="payment_data" prior="tbl" >
+			<column name="pd_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="pt_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<comment><![CDATA[FK for payment type]]></comment>
+			</column>
+			<index name="pk_payment_data_pd_id" unique="PRIMARY_KEY" >
+				<column name="pd_id" />
+			</index>
+		</table>
+		<table name="rating" prior="tbl" >
+			<comment><![CDATA[Table for order ratings]]></comment>
+			<column name="rt_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+			</column>
+			<column name="o_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<comment><![CDATA[FK for Order ID to track which orders get which ratings]]></comment>
+			</column>
+			<column name="rt_rating" type="int" jt="4" mandatory="y" unsigned="y" >
+				<comment><![CDATA[Rate the order 1 to 5.]]></comment>
+			</column>
+			<column name="rt_comment" type="varchar" length="150" jt="12" />
+			<column name="rt_timestamp" type="date" jt="91" mandatory="y" />
+			<index name="pk_rating_rt_id" unique="PRIMARY_KEY" >
+				<column name="rt_id" />
+			</index>
+			<index name="unq_rating_o_id" unique="UNIQUE_KEY" >
+				<column name="o_id" />
+			</index>
+			<fk name="fk_rating_order" to_schema="sushi_delivery_schema" to_table="order" >
+				<fk_column name="o_id" pk="o_id" />
+			</fk>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="restaurant" prior="tbl" >
+			<comment><![CDATA[Restaurants table]]></comment>
+			<column name="r_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+				<comment><![CDATA[PK for Restaurant table]]></comment>
+			</column>
+			<column name="r_name" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[Name of the restaurant]]></comment>
+			</column>
+			<column name="r_address" type="varchar" length="250" jt="12" mandatory="y" >
+				<comment><![CDATA[Address of the restaurant]]></comment>
+			</column>
+			<column name="r_opening_hours" type="datetime" jt="93" mandatory="y" >
+				<comment><![CDATA[Opening hours of the restaurant]]></comment>
+			</column>
+			<column name="r_closing_hours" type="datetime" jt="93" mandatory="y" >
+				<comment><![CDATA[Closing hours of the restaurant]]></comment>
+			</column>
+			<index name="pk_restaurant_r_id" unique="PRIMARY_KEY" >
+				<column name="r_id" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+		<table name="user" prior="tbl" >
+			<comment><![CDATA[Tables for user info]]></comment>
+			<column name="u_id" type="int" jt="4" mandatory="y" unsigned="y" >
+				<identity><![CDATA[AUTO_INCREMENT]]></identity>
+				<comment><![CDATA[PK for user ID]]></comment>
+			</column>
+			<column name="u_fname" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[First name of the user]]></comment>
+			</column>
+			<column name="u_lname" type="varchar" length="100" jt="12" mandatory="y" >
+				<comment><![CDATA[Last name of the user]]></comment>
+			</column>
+			<column name="u_username" type="varchar" length="50" jt="12" mandatory="y" >
+				<comment><![CDATA[Login username of the user]]></comment>
+			</column>
+			<column name="u_password" type="varbinary" length="100" jt="-3" mandatory="y" >
+				<comment><![CDATA[Password of the user]]></comment>
+			</column>
+			<column name="u_email" type="varchar" length="320" jt="12" mandatory="y" >
+				<comment><![CDATA[Email of the user]]></comment>
+			</column>
+			<column name="u_phone" type="char" length="15" jt="1" mandatory="y" >
+				<comment><![CDATA[Phone number of user]]></comment>
+			</column>
+			<index name="pk_tbl_u_id" unique="PRIMARY_KEY" >
+				<column name="u_id" />
+			</index>
+			<options><![CDATA[engine=InnoDB]]></options>
+		</table>
+	</schema>
+	<connector name="MariaDb" database="MariaDb" host="localhost" port="3306" user="root" />
+	<layout name="Default Layout" id="Layout-1582" joined_routing="y" show_relation="columns" >
+		<entity schema="sushi_delivery_schema" name="address" color="B399FF" x="1184" y="80" />
+		<entity schema="sushi_delivery_schema" name="extras" color="E6E6B3" x="176" y="688" />
+		<entity schema="sushi_delivery_schema" name="menu_items" color="E6E6B3" x="208" y="272" />
+		<entity schema="sushi_delivery_schema" name="menu_type" color="E6E6B3" x="48" y="320" />
+		<entity schema="sushi_delivery_schema" name="order" color="E6804D" x="688" y="416" />
+		<entity schema="sushi_delivery_schema" name="order_details" color="E6804D" x="416" y="448" />
+		<entity schema="sushi_delivery_schema" name="order_status" color="E6804D" x="992" y="640" />
+		<entity schema="sushi_delivery_schema" name="order_status_type" color="E6804D" x="1248" y="672" />
+		<entity schema="sushi_delivery_schema" name="rating" color="E6804D" x="592" y="688" />
+		<entity schema="sushi_delivery_schema" name="restaurant" color="B399FF" x="608" y="80" />
+		<entity schema="sushi_delivery_schema" name="user" color="B399FF" x="960" y="160" />
+		<group name="Menu" color="E6E6B3" >
+			<comment><![CDATA[Group of tables related to menu]]></comment>
+			<entity schema="sushi_delivery_schema" name="extras" />
+			<entity schema="sushi_delivery_schema" name="menu_type" />
+			<entity schema="sushi_delivery_schema" name="menu_items" />
+		</group>
+		<group name=" Orders" color="E6804D" >
+			<entity schema="sushi_delivery_schema" name="order" />
+			<entity schema="sushi_delivery_schema" name="order_status" />
+			<entity schema="sushi_delivery_schema" name="order_status_type" />
+			<entity schema="sushi_delivery_schema" name="rating" />
+			<entity schema="sushi_delivery_schema" name="order_details" />
+		</group>
+		<group name="Customer &amp; Restaurant" color="B399FF" >
+			<entity schema="sushi_delivery_schema" name="restaurant" />
+			<entity schema="sushi_delivery_schema" name="user" />
+			<entity schema="sushi_delivery_schema" name="address" />
+		</group>
+	</layout>
+</project>
